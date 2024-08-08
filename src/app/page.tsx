@@ -1,14 +1,19 @@
-import React from "react";  
+import React, { useEffect, useState } from "react";  
 import ProductList from "@/components/ProductList";
 
-const products = [
-  { id: 1, name: 'Product 1', price: 10, description: 'Description for product 1' },
-  { id: 2, name: 'Product 2', price: 20, description: 'Description for product 2' },
-  { id: 3, name: 'Product 3', price: 30, description: 'Description for product 3' },
-];
+
 
 
 const Home = () => {
+
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch('https://localhost:3000/products')
+     .then((response) => response.json())
+     .then((data) => setProducts(data));
+  }, []);
+
   return (
     <main className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Liste des produits</h1>
