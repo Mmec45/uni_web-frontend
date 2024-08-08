@@ -7,7 +7,7 @@ export default function Home() {
   const [priceFilter, setPriceFilter] = useState<number | null>(null);
 
   useEffect(() => {
-    let url = 'http://localhost:3000/products';
+    let url = 'http://localhost:3001/products';
     const params = new URLSearchParams();
 
     if (searchTerm) {
