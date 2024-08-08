@@ -1,95 +1,73 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import React, { useEffect, useState } from 'react';
+import ProductList from '@/components/ProductList';
+
+const Home = () => {
+  const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [priceFilter, setPriceFilter] = useState<number | null>(null);
+
+  useEffect(() => {
+    let url = 'http://localhost:3001/products';
+    const params = new URLSearchParams();
+
+    if (searchTerm) {
+      params.append('searchTerm', searchTerm);
+    }
+
+    if (priceFilter) {
+      params.append('maxPrice', String(priceFilter));
+    }
+
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => setProducts(data));
+  }, [searchTerm, priceFilter]);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+    <main className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Product List</h1>
+      <input
+        type="text"
+        placeholder="Search by name"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="border p-2 mb-4 w-full"
+      />
+      <select
+        onChange={(e) => setPriceFilter(Number(e.target.value))}
+        className="border p-2 mb-4 w-full"
+      >
+        <option value="">Filter by price</option>
+        <option value="10">$10 or less</option>
+        <option value="20">$20 or less</option>
+        <option value="30">$30 or less</option>
+      </select>
+      <table className="min-w-full bg-white border border-gray-300">
+        <thead>
+          <tr>
+            <th className="py-2 px-4 border-b">Name</th>
+            <th className="py-2 px-4 border-b">Description</th>
+            <th className="py-2 px-4 border-b">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((product: any) => (
+            <tr key={product.id}>
+              <td className="py-2 px-4 border-b">{product.name}</td>
+              <td className="py-2 px-4 border-b">{product.description}</td>
+              <td className="py-2 px-4 border-b">${product.price.toFixed(2)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </main>
   );
 }
+
+export default Home
