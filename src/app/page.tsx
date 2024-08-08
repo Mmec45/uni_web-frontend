@@ -1,7 +1,9 @@
+"use client";
+
 import React, { useEffect, useState } from 'react';
 import ProductList from '@/components/ProductList';
 
-export default function Home() {
+const Home = () => {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [priceFilter, setPriceFilter] = useState<number | null>(null);
@@ -50,3 +52,5 @@ export default function Home() {
     </main>
   );
 }
+
+export default Home
